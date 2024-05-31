@@ -42,7 +42,7 @@ public class CopyGenerator : IIncrementalGenerator
 
             foreach(var record in records)
             {
-                Debugger.Launch();
+                //Debugger.Launch();
                 var recordBlueprint = new RecordBlueprint(record.Identifier.Text, FullNamespace, Version);
 
                 var semanticModel = compilation.GetSemanticModel(record.SyntaxTree);
@@ -102,7 +102,11 @@ public class CopyGenerator : IIncrementalGenerator
 
         var recordBlueprint = new RecordBlueprint(parameterTypeSymbol.Name, FullNamespace, Version);
 
-        var parameters = parameterTypeSymbol.GetMembers().OfType<IPropertySymbol>().Skip(1).ToList();
+        var parameters = parameterTypeSymbol
+            .GetMembers()
+            .OfType<IPropertySymbol>()
+            //skip first equality property
+            .Skip(1);
 
         foreach(var param in parameters)
         {
@@ -121,9 +125,11 @@ public class CopyGenerator : IIncrementalGenerator
 
         var enumBlueprint = new EnumBlueprint(parameterTypeSymbol.Name, FullNamespace, Version);
 
-        var enumMembers = parameterTypeSymbol.GetMembers().OfType<IFieldSymbol>();
+        var enumMembers = parameterTypeSymbol
+            .GetMembers()
+            .OfType<IFieldSymbol>();
 
-        foreach (IFieldSymbol enumValue in parameterTypeSymbol.GetMembers().OfType<IFieldSymbol>())
+        foreach (IFieldSymbol enumValue in enumMembers)
         {
             enumBlueprint.AddParameter(enumValue.ConstantValue?.ToString(), enumValue.Name);
         }
@@ -133,17 +139,27 @@ public class CopyGenerator : IIncrementalGenerator
 
     private string GetPropertyType(ITypeSymbol typeSymbol)
     {
+        //Debugger.Launch();
         bool isNullable = typeSymbol.IsNullable();
+
+        if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
+        {
+            var elementType = GetPropertyType(arrayTypeSymbol.ElementType);
+            var arrayRank = arrayTypeSymbol.Rank;
+            var arraySuffix = arrayRank == 1 ? "[]" : $"[{new string(',', arrayRank - 1)}]";
+            var arrayTypeName = $"{elementType}{arraySuffix}";
+            return isNullable ? $"{arrayTypeName}?" : arrayTypeName;
+        }
 
         if (typeSymbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType)
         {
-            var typeName = namedTypeSymbol.Name;
+            var typeName = Extensions.GetShortTypeName(namedTypeSymbol);
             var typeArguments = string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetPropertyType));
             var fullTypeName = $"{typeName}<{typeArguments}>";
             return isNullable ? $"{fullTypeName}?" : fullTypeName;
         }
 
-        var regularTypeName = typeSymbol.Name;
+        var regularTypeName = Extensions.GetShortTypeName(typeSymbol);
         return isNullable ? $"{regularTypeName}?" : regularTypeName;
     }
 

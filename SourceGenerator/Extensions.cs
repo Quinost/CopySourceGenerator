@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -23,4 +24,7 @@ public static class Extensions
             .AppendLine()
             .AppendLine($"namespace {namespaceName};")
             .AppendLine();
+
+    public static string GetShortTypeName(ITypeSymbol typeSymbol) 
+        => typeSymbol.SpecialType is SpecialType.None ? typeSymbol.Name : typeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
 }

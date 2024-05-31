@@ -3,6 +3,7 @@
 namespace Library.Models;
 
 public record BasicTypesModel(
+    int[] arrrrray,
     ICollection<EnumModel> StringCollection,
     LibraryCollectionsOfBaseModel LibraryBasicTypesModel123123, 
     LibraryCollectionsOfBasicTypesModel LibraryBasicTypesModel123124,
