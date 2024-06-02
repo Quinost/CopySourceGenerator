@@ -1,16 +1,13 @@
 ﻿using Microsoft.CodeAnalysis;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace SourceGenerator;
+
 public static class Extensions
 {
     public static string GetLastAssemblyName(string assemblyName) 
         => assemblyName.Split('.').Last();
-
-    public static bool IsNullable(this ITypeSymbol type)
-        => type.SpecialType == SpecialType.System_Nullable_T;
 
     public static StringBuilder GenerateDefaultUsingsAndNamespaceCode(string version, string namespaceName) 
         => new StringBuilder()

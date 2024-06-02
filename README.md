@@ -8,5 +8,6 @@ TODO:
 - Change the way the path is pulled for saving (currently you have to specify it in the code)
 - Add versioning and checking to prevent unnecessary file generation
 - Add deletion of unnecessary copies
+- Fix nullable parameters (Nullable<T> -> T?)
 
 

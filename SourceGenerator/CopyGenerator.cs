@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceGenerator.Blueprints;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -139,28 +138,19 @@ public class CopyGenerator : IIncrementalGenerator
 
     private string GetPropertyType(ITypeSymbol typeSymbol)
     {
-        //Debugger.Launch();
-        bool isNullable = typeSymbol.IsNullable();
-
         if (typeSymbol is IArrayTypeSymbol arrayTypeSymbol)
         {
             var elementType = GetPropertyType(arrayTypeSymbol.ElementType);
-            var arrayRank = arrayTypeSymbol.Rank;
-            var arraySuffix = arrayRank == 1 ? "[]" : $"[{new string(',', arrayRank - 1)}]";
-            var arrayTypeName = $"{elementType}{arraySuffix}";
-            return isNullable ? $"{arrayTypeName}?" : arrayTypeName;
+            return $"{elementType}{(arrayTypeSymbol.Rank == 1 ? "[]" : $"[{new string(',', arrayTypeSymbol.Rank - 1)}]")}";
         }
 
         if (typeSymbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.IsGenericType)
         {
             var typeName = Extensions.GetShortTypeName(namedTypeSymbol);
-            var typeArguments = string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetPropertyType));
-            var fullTypeName = $"{typeName}<{typeArguments}>";
-            return isNullable ? $"{fullTypeName}?" : fullTypeName;
+            return $"{typeName}<{string.Join(", ", namedTypeSymbol.TypeArguments.Select(GetPropertyType))}>";
         }
 
-        var regularTypeName = Extensions.GetShortTypeName(typeSymbol);
-        return isNullable ? $"{regularTypeName}?" : regularTypeName;
+        return Extensions.GetShortTypeName(typeSymbol);
     }
 
     private void SaveFile(Blueprint blueprint)
