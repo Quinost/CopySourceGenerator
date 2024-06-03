@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 
 namespace SourceGenerator.Blueprints;
-public sealed class RecordBlueprint(string RecordName, string NamespaceWithPrefix, string Version) 
-    : Blueprint(RecordName, NamespaceWithPrefix, Version)
+public sealed class RecordBlueprint(string RecordName, string Namespace) 
+    : Blueprint(RecordName, Namespace)
 {
     public override string ToFullCode()
     {
-        var sb = Extensions.GenerateDefaultUsingsAndNamespaceCode(Version, NamespaceWithPrefix);
+        var sb = Extensions.GenerateDefaultUsingsAndNamespaceCode(Namespace);
 
         sb.AppendLine($"public record {Name} (");
 
@@ -15,7 +15,7 @@ public sealed class RecordBlueprint(string RecordName, string NamespaceWithPrefi
             var last = parameters.Last();
             foreach (var param in parameters)
             {
-                sb.AppendLine($"    {param.Type} {param.Name}{(param != last ? ",": "")}");
+                sb.AppendLine($"    {param.TypeOrValue} {param.Name}{(param != last ? ",": "")}");
             }
         }
 

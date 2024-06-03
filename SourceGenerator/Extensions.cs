@@ -9,9 +9,8 @@ public static class Extensions
     public static string GetLastAssemblyName(string assemblyName) 
         => assemblyName.Split('.').Last();
 
-    public static StringBuilder GenerateDefaultUsingsAndNamespaceCode(string version, string namespaceName) 
+    public static StringBuilder GenerateDefaultUsingsAndNamespaceCode(string namespaceName) 
         => new StringBuilder()
-            .AppendLine($"//{version}")
             .AppendLine("//auto-generated")
             .AppendLine("using System;")
             .AppendLine("using System.Collections.Generic;")

@@ -1,19 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SourceGenerator.Blueprints;
-public abstract class Blueprint(string Name, string NamespaceWithPrefix, string Version)
+public abstract class Blueprint(string Name, string Namespace)
 {
     public string Name = Name;
-    public string Version = Version;
-    public string NamespaceWithPrefix = NamespaceWithPrefix;
-    public string NamespaceLast = NamespaceWithPrefix.Split('.').Last();
+    public string Namespace = Namespace;
+    public string FileName = $"{Name}.g.cs";
 
-    protected readonly ICollection<Parameter> parameters = [];
+    protected readonly ICollection<(string TypeOrValue, string Name)> parameters = [];
 
-    public virtual void AddParameter(string type, string name)
+    public virtual void AddParameter(string typeOrValue, string name)
     {
-        parameters.Add(new(type, name));
+        parameters.Add(new(typeOrValue, name));
     }
 
     public abstract string ToFullCode();
