@@ -5,9 +5,8 @@ Without creating references, it adds a copy along with submodels, generics and e
 This allows to maintain independence between libraries (modules)
 
 TODO:
-- Change the way the path is pulled for saving (currently you have to specify it in the code)
+- Maybe fix the way to get the path to the directory. Now it uses a pre-build event, so on the first compilation there is an error
 - Add versioning and checking to prevent unnecessary file generation
-- Add deletion of unnecessary copies
 - Fix nullable parameters (Nullable<T> -> T?)
 
 
