@@ -1,13 +1,14 @@
-﻿namespace SourceGenerator.Blueprints;
+﻿using System.Text;
+
+namespace SourceGenerator.Blueprints;
 public sealed class EnumBlueprint(string EnumName, string Namespace) 
-    : Blueprint(EnumName, Namespace)
+    : Blueprint(EnumName, Namespace, true)
 {
     public override string ToFullCode()
     {
-        var sb = Extensions.GenerateDefaultUsingsAndNamespaceCode(Namespace);
-
-        sb.AppendLine($"public enum {Name}");
-        sb.AppendLine("{");
+        var sb = Extensions.GenerateDefaultUsingsAndNamespaceCode(Namespace, AddDtoUsing, IsDto)
+            .AppendLine($"public enum {Name}")
+            .AppendLine("{");
 
         foreach (var param in parameters)
         {

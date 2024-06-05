@@ -6,21 +6,24 @@ namespace SourceGenerator;
 
 public static class Extensions
 {
-    public static string GetLastAssemblyName(string assemblyName) 
+    public static string GetLastAssemblyName(string assemblyName)
         => assemblyName.Split('.').Last();
 
-    public static StringBuilder GenerateDefaultUsingsAndNamespaceCode(string namespaceName) 
-        => new StringBuilder()
-            .AppendLine("//auto-generated")
-            .AppendLine("using System;")
-            .AppendLine("using System.Collections.Generic;")
-            .AppendLine("using System.Collections.Concurrent;")
-            .AppendLine("using System.Collections.Immutable;")
-            .AppendLine("using System.Collections.ObjectModel;")
-            .AppendLine()
-            .AppendLine($"namespace {namespaceName};")
+    public static StringBuilder GenerateDefaultUsingsAndNamespaceCode(string namespaceName, bool addDtoUsing, bool isDto)
+    {
+        var sb = new StringBuilder()
+                .AppendLine("//auto-generated");
+
+        if (addDtoUsing)
+            sb.AppendLine($"using {namespaceName}{Constants.DtosNamespacePart};");
+
+        sb.AppendLine()
+            .AppendLine($"namespace {namespaceName}{(isDto ? Constants.DtosNamespacePart : "")};")
             .AppendLine();
 
-    public static string GetShortTypeName(ITypeSymbol typeSymbol) 
+        return sb;
+    }
+
+    public static string GetShortTypeName(ITypeSymbol typeSymbol)
         => typeSymbol.SpecialType is SpecialType.None ? typeSymbol.Name : typeSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
 }

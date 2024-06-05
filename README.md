@@ -8,5 +8,3 @@ TODO:
 - Maybe fix the way to get the path to the directory. Now it uses a pre-build event, so on the first compilation there is an error
 - Add versioning and checking to prevent unnecessary file generation
 - Fix nullable parameters (Nullable<T> -> T?)
-
-
